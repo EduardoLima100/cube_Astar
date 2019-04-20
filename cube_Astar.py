@@ -85,9 +85,6 @@ class Node:
     def __str__(self):
         return str(self.xyz)
         
-CAMINHOX = []
-CAMINHOY = []
-CAMINHOZ = []
 def main():
     start_Node = Node(GAME[0][0],GAME[0][1],GAME[0][2])
     NODES.append(start_Node)
@@ -113,4 +110,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
