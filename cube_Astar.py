@@ -92,7 +92,6 @@ class Node:
        
 
 def main():
-    global NODES
     NODES = []
     
     set_BLOCKED()
@@ -107,16 +106,17 @@ def main():
     while loop:
         
         if((maior_tempo > 0) and (time.time() - t0 > maior_tempo*10)):
-            return 1
+            return 0
         if len(NODES) > 0:
             #print(NODES[0])
             if NODES[0].is_Objetivo:
                 #print(time.strftime("\n[%H:%M:%S]"))
                 #print("Objetivo encontrado!")
-                print('.', end='')
+                print(NODES[0].way, end=' ')
                 #print(NODES[0])
                 #print("Distância percorrida:", NODES[0].way)
                 loop = False
+                return NODES[0].way
             else:
                 NODES[0].next_Node()
                 
@@ -139,12 +139,14 @@ if __name__ == "__main__":
     maior_tempo = 0
     while True:
         
+        
         t0 = time.time()
-        if main() == 1:
+        v = main()
+        if v == 0:
             print("/", end='')
-        else:
+        elif(v!=0 and v!=None):
             tf = time.time()
             #print("Tempo gasto:", tf-t0)
             if tf-t0 > maior_tempo:
                 maior_tempo = tf-t0
-                print("\nMaior tempo:",maior_tempo)
+                print("\nMaior tempo:",maior_tempo, "Distancia:",v)
