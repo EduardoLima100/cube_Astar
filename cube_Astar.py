@@ -10,6 +10,10 @@ OP = [[1,0,0],      # >
       [0,0,1],      # x
       [0,0,-1]]     # .
 
+DATA = []
+for i in range(TAM*6):
+    DATA.append([0,0])
+
 def rand_xyz():
     return [random.randint(0,TAM-1),
             random.randint(0,TAM-1),
@@ -103,19 +107,23 @@ def main():
     NODES.append(start_Node)
 
     loop = True
+    t0 = float(time.time())
     while loop:
-        
-        if((maior_tempo > 0) and (time.time() - t0 > maior_tempo*10)):
+        if(time.time() - t0 > 32):#(maior_tempo > 0) and (time.time() - t0 > maior_tempo*10)):
             return 0
         if len(NODES) > 0:
             #print(NODES[0])
             if NODES[0].is_Objetivo:
+                tf = float(time.time())
                 #print(time.strftime("\n[%H:%M:%S]"))
                 #print("Objetivo encontrado!")
-                print(NODES[0].way, end=' ')
+                print("\n", NODES[0].way, end=' ')
                 #print(NODES[0])
                 #print("Distância percorrida:", NODES[0].way)
+                DATA[NODES[0].way][0] = float(float(DATA[NODES[0].way][0]*DATA[NODES[0].way][1] + (tf-t0))/float(DATA[NODES[0].way][1]+1.))
+                DATA[NODES[0].way][1] = DATA[NODES[0].way][1]+1
                 loop = False
+                print(DATA[NODES[0].way])
                 return NODES[0].way
             else:
                 NODES[0].next_Node()
@@ -131,22 +139,21 @@ def main():
             print('-', end='')
             loop = False
         
-                   
 if __name__ == "__main__":
     global t0;
     print(time.strftime("\n[%H:%M:%S]"))
     global maior_tempo
     maior_tempo = 0
     while True:
-        
-        
-        t0 = time.time()
         v = main()
         if v == 0:
             print("/", end='')
-        elif(v!=0 and v!=None):
-            tf = time.time()
-            #print("Tempo gasto:", tf-t0)
-            if tf-t0 > maior_tempo:
-                maior_tempo = tf-t0
-                print("\nMaior tempo:",maior_tempo, "Distancia:",v)
+#        elif(v!=0 and v!=None):
+#            tf = time.time()
+#            #print("Tempo gasto:", tf-t0)
+#            if tf-t0 > maior_tempo:
+#                maior_tempo = tf-t0
+#                print("\nMaior tempo:",maior_tempo, "Distancia:",v)
+    
+    for i in range(len(DATA)):
+        print(i, DATA[i])
