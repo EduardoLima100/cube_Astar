@@ -1,8 +1,9 @@
 import random
 import time
+import pickle
 
-TAM = 10
-BLOCK = 0.4
+tam = 10
+block = 0.4
 OP = [[1,0,0],      # >
       [-1,0,0],     # <
       [0,1,0],      # ^
@@ -10,23 +11,49 @@ OP = [[1,0,0],      # >
       [0,0,1],      # x
       [0,0,-1]]     # .
 
-DATA = []
-for i in range(TAM*6):
-    DATA.append([0,0])
+global DATA
+try:
+    with open('times_data', 'rb') as fp:
+        DATA = pickle.load(fp)
+        fp.close()
+except IOError:
+    print("Saindo do início")
+    DATA = []
+
+def DATA_write(d,t):
+    global DATA
+    while len(DATA) < d+1:
+        DATA.append([0,0])
+    DATA[d][0] = (DATA[d][0]*DATA[d][1] + t)/(DATA[d][1]+1.)
+    DATA[d][1] = DATA[d][1] + 1
+        
+def print_DATA():
+    for i in range(1,len(DATA)):
+        print(i, DATA[i][0],DATA[i][1])
 
 def rand_xyz():
-    return [random.randint(0,TAM-1),
-            random.randint(0,TAM-1),
-            random.randint(0,TAM-1)]
+    return [random.randint(0,tam-1),
+            random.randint(0,tam-1),
+            random.randint(0,tam-1)]
 
 
 def set_BLOCKED():    
     global BLOCKED
-    BLOCKED = []
-    while len(BLOCKED) < int(TAM**3*BLOCK):        
-        xyz = rand_xyz()
-        if xyz not in BLOCKED:
-            BLOCKED.append(xyz)
+    try:
+        with open('blocked_cube', 'rb') as fp:
+            BLOCKED = pickle.load(fp)
+    except IOError:
+        print("Bloqueando cubo")
+        BLOCKED = []
+        while len(BLOCKED) < int(tam**3*block):        
+            xyz = rand_xyz()
+            if xyz not in BLOCKED:
+                BLOCKED.append(xyz)
+        with open('blocked_cube', 'wb') as fp:
+            pickle.dump(BLOCKED, fp)
+            fp.close()
+    
+    
     #print("\n\nBLOCKED = ",BLOCKED)
 
 def set_GAME():    
@@ -52,7 +79,7 @@ class Node:
     
     def teste_Node(self):
         for c in self.xyz:
-            if c < 0 or c >= TAM: #saiu do cubo
+            if c < 0 or c >= tam: #saiu do cubo
                 return False
         
         if self.xyz in BLOCKED: #caminho bloqueado
@@ -67,7 +94,7 @@ class Node:
             return False
     
     def next_Node(self):
-        men_custo = TAM**3 - (TAM**3)*BLOCK
+        men_custo = tam**3 - (tam**3)*block
         for op in OP:
             new = Node(self.xyz[0]+op[0],self.xyz[1]+op[1],self.xyz[2]+op[2])
             
@@ -106,24 +133,32 @@ def main():
     
     NODES.append(start_Node)
 
-    loop = True
-    t0 = float(time.time())
-    while loop:
-        if(time.time() - t0 > 32):#(maior_tempo > 0) and (time.time() - t0 > maior_tempo*10)):
+    t0 = time.clock()
+    while True:
+        if(time.clock() - t0 > 1):
             return 0
         if len(NODES) > 0:
             #print(NODES[0])
             if NODES[0].is_Objetivo:
-                tf = float(time.time())
+                tf = time.clock()
                 #print(time.strftime("\n[%H:%M:%S]"))
                 #print("Objetivo encontrado!")
-                print("\n", NODES[0].way, end=' ')
+                
                 #print(NODES[0])
                 #print("Distância percorrida:", NODES[0].way)
-                DATA[NODES[0].way][0] = float(float(DATA[NODES[0].way][0]*DATA[NODES[0].way][1] + (tf-t0))/float(DATA[NODES[0].way][1]+1.))
-                DATA[NODES[0].way][1] = DATA[NODES[0].way][1]+1
-                loop = False
-                print(DATA[NODES[0].way])
+                if(tf-t0 != 0):
+                    DATA_write(NODES[0].way,tf-t0)
+                    print("\n", NODES[0].way, end=' ')
+                    print(DATA[NODES[0].way],len(DATA)-1,tf-t0)
+                    
+                    with open('times_data', 'wb') as fp:
+                        pickle.dump(DATA, fp)
+                        fp.close()
+                else:
+                   print(".", end=' ')
+                return NODES[0].way
+                break
+                
                 return NODES[0].way
             else:
                 NODES[0].next_Node()
@@ -136,8 +171,8 @@ def main():
         else:
             #print(time.strftime("\n[%H:%M:%S]"))
             #print("Todas as possibilidades foram testadas\nSolução não existe")
-            print('-', end='')
-            loop = False
+            print('-', end=' ')
+            break
         
 if __name__ == "__main__":
     global t0;
@@ -155,5 +190,3 @@ if __name__ == "__main__":
 #                maior_tempo = tf-t0
 #                print("\nMaior tempo:",maior_tempo, "Distancia:",v)
     
-    for i in range(len(DATA)):
-        print(i, DATA[i])
