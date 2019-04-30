@@ -1,4 +1,5 @@
 import pickle
+import matplotlib.pyplot as plt
 
 global DATA
 
@@ -15,6 +16,14 @@ try:
 except IOError:
     print("Não há dados")
     
+X = range(len(DATA))
+Y = []
+for y in DATA:
+    Y.append(y[0])
 
+plt.rcParams['figure.figsize'] = (7,7)
+plt.plot(X,Y)
+plt.grid()
+plt.show()
 
         
