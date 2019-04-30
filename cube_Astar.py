@@ -63,6 +63,20 @@ def set_GAME():
         xyz = rand_xyz()
         if xyz not in BLOCKED and xyz not in GAME:
             GAME.append(xyz)
+    s = 0
+    for i in range(3):
+        s = s + float((GAME[1][i]-GAME[0][i])**2)
+    
+    if s**(1/2)<13:
+        try:
+            set_GAME()
+        except RecursionError:
+            print("\nErro de recursividade ao gerar o jogo")
+            GAME = []
+            while len(GAME) < 2:        
+                xyz = rand_xyz()
+                if xyz not in BLOCKED and xyz not in GAME:
+                    GAME.append(xyz)
     
     #print(time.strftime("\n[%H:%M:%S]"))
     #print("Início: ", GAME[0], "\nObjetivo: ", GAME[1])
@@ -112,7 +126,7 @@ class Node:
         s = 0
         for i in range(3):
             s = s + float((GAME[1][i]-self.xyz[i])**2)
-        #print("Dist: ",s)
+        
         return float(s**(1/2))
     
     def calc_Custo(self):
@@ -135,7 +149,7 @@ def main():
 
     t0 = time.clock()
     while True:
-        if(time.clock() - t0 > 1):
+        if(time.clock() - t0 > 35):
             return 0
         if len(NODES) > 0:
             #print(NODES[0])
