@@ -26,10 +26,6 @@ def DATA_write(d,t):
         DATA.append([0,0])
     DATA[d][0] = (DATA[d][0]*DATA[d][1] + t)/(DATA[d][1]+1.)
     DATA[d][1] = DATA[d][1] + 1
-        
-def print_DATA():
-    for i in range(1,len(DATA)):
-        print(i, DATA[i][0],DATA[i][1])
 
 def rand_xyz():
     return [random.randint(0,tam-1),
@@ -63,20 +59,6 @@ def set_GAME():
         xyz = rand_xyz()
         if xyz not in BLOCKED and xyz not in GAME:
             GAME.append(xyz)
-    s = 0
-    for i in range(3):
-        s = s + float((GAME[1][i]-GAME[0][i])**2)
-    
-    if s**(1/2)<13:
-        try:
-            set_GAME()
-        except RecursionError:
-            print("\nErro de recursividade ao gerar o jogo")
-            GAME = []
-            while len(GAME) < 2:        
-                xyz = rand_xyz()
-                if xyz not in BLOCKED and xyz not in GAME:
-                    GAME.append(xyz)
     
     #print(time.strftime("\n[%H:%M:%S]"))
     #print("Início: ", GAME[0], "\nObjetivo: ", GAME[1])
@@ -140,7 +122,12 @@ def main():
     NODES = []
     
     set_BLOCKED()
-    set_GAME()
+    
+    soma = 0
+    while(soma**(1/2)<29):
+        set_GAME()
+        for i in range(3):
+            soma = soma + (GAME[1][i]-GAME[0][i])**2
     
     start_Node = Node(GAME[0][0],GAME[0][1],GAME[0][2])
     #print("Distância em linha reta:", start_Node.calc_Dist())
@@ -149,7 +136,7 @@ def main():
 
     t0 = time.clock()
     while True:
-        if(time.clock() - t0 > 35):
+        if(time.clock() - t0 > 5):
             return 0
         if len(NODES) > 0:
             #print(NODES[0])
