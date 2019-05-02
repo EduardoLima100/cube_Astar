@@ -250,10 +250,10 @@ def play_Game():
 
     t0 = time.clock()
     while True:
-        if len(NODES) > 0:
+        if len(NODES) > 0: #Houver algum nó a ser testado
             if NODES[0].is_Objetivo:#Se o nó sendo testado for o objetivo do problema proposto
                 """
-                Termina a contagem do tempo e salva os dados do jogo em DATA e
+                Termina a contagem do tempo, mostra os dados do êxito e os salva em DATA e
                 no arquivo times_data
                 """
                 tf = time.clock()
@@ -263,12 +263,11 @@ def play_Game():
                     with open('times_data', 'wb') as fp:
                         pickle.dump(DATA, fp)
                         fp.close()
-
-                return NODES[0].way
                 break
-                
-                return NODES[0].way
-            else:
+            else: #Se o nó não for o objetivo
+                """
+                Sege a busca
+                """
                 NODES[0].next_Node()
                 
             for n in NODES[0].nxt: 
@@ -276,12 +275,15 @@ def play_Game():
             
             NODES.remove(NODES[0])
             
-        else:
-            break
-        if(time.clock() - t0 > 32):
-            break
+        else: #Se não houver mais nós válidos a serem testados
+            break #Pula o jogo
+        if(time.clock() - t0 > 35): #Se o tempo extrapolar o maior tempo requerido para atingir um objetivo nas baterias de testes do algorítmo
+            break #Pula o jogo
 
 def main():
+    """
+    Inicia o programa e chama aos jogos
+    """
     set_DATA()
     set_BLOCKED()
     while True:
