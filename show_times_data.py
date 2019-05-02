@@ -17,14 +17,14 @@ def print_DATA(DATA):
     """
     Função para imprimir os dados na tela
     """
-    print("Distância:","\tTempo médio:","\t\t\tOcorrências:")
+    print("Distância:","\tTempo médio (s):","\t\t\tOcorrências:")
     for i in range(len(DATA)):
         print(DATA[i][0],"\t|\t","%.20f"%DATA[i][1],"\t|\t",DATA[i][2])
 
 
 def main():
     """
-    Função main trata os dados para mostrar, pegando apenas os que tiverem
+    Função que trata os dados para mostrar, pegando apenas os que tiverem
     mais que 50 ocorrências e os mostra impressos e em um grafico
     """
     try:
@@ -58,7 +58,10 @@ def main():
         
         
         plt.rcParams['figure.figsize'] = (7,7)
-        plt.plot(X,Y)
+        plt.plot(X,Y,'-',X,Y,'.')
+        plt.title("Gráfico obtido:",fontsize = 20)
+        plt.ylabel("Tempo médio (s)")
+        plt.xlabel("Distância")
         plt.grid()
         plt.show()
 
