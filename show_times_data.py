@@ -1,3 +1,15 @@
+"""
+Este programa mostra os dados obtidos pelo cube_Astar.py
+
+Aluno: Eduardo Machado de Lima
+Matrícula: 201620605
+"""
+
+"""
+Bibliotecas utilizadas:
+    pickle: Para guardar os dados de tempo e os bloqueios do cubo
+    matplotlib.pyplot: Para plotar o gráfico dos dados
+"""
 import pickle
 import matplotlib.pyplot as plt
 
